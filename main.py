@@ -19,6 +19,12 @@ class CafeForm(FlaskForm):
     coffee_rating = (SelectField(label="Coffee Rating", choices=[('☕', '☕'), ('☕☕', '☕☕'),
                                                                  ('☕☕☕', '☕☕☕'), ('☕☕☕☕', '☕☕☕☕'),
                                                                  ('☕☕☕☕☕', '☕☕☕☕☕')]))
+    wifi_rating = (SelectField(label="Wifi Strength Rating", choices=[('❌', '❌'), ('💪', '💪'), ('💪💪', '💪💪'),
+                                                                 ('💪💪💪', '💪💪💪'), ('💪💪💪💪', '💪💪💪💪'),
+                                                                 ('💪💪💪💪💪', '💪💪💪💪💪')]))
+    power_sockets = (SelectField(label="Power Socket Availability", choices=[('❌', '❌'), ('🔌', '🔌'), ('🔌🔌', '🔌🔌'),
+                                                                 ('🔌🔌🔌', '🔌🔌🔌'), ('🔌🔌🔌🔌', '🔌🔌🔌🔌'),
+                                                                 ('🔌🔌🔌🔌🔌', '🔌🔌🔌🔌🔌')]))
     submit = SubmitField('Submit')
 
 # Exercise:
@@ -36,11 +42,15 @@ def home():
     return render_template("index.html")
 
 
-@app.route('/add')
+@app.route('/add', methods=['GET', 'POST'])
 def add_cafe():
     form = CafeForm()
     if form.validate_on_submit():
-        print("True")
+        print(f"{form.cafe.data},{form.location.data},{form.opening.data},{form.closing.data},{form.coffee_rating.data},{form.wifi_rating.data},{form.power_sockets.data}")
+
+        cafe_data = open("cafe-data.csv", "a", encoding="utf-8")
+        cafe_data.write(f"\n{form.cafe.data},{form.location.data},{form.opening.data},{form.closing.data},{form.coffee_rating.data},{form.wifi_rating.data},{form.power_sockets.data}")
+        cafe_data.close()
     # Exercise:
     # Make the form write a new row into cafe-data.csv
     # with   if form.validate_on_submit()
